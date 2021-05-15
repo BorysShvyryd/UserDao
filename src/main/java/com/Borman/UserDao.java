@@ -59,7 +59,7 @@ public class UserDao {
                     user.setId(resultSet.getInt(1));
                 }
             } else
-                System.out.println("Failed to hash password");
+                System.out.println(RED + "Failed to hash password" + RESET);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
