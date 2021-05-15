@@ -49,12 +49,18 @@ public class UserDao {
         try (PreparedStatement statement = conn.prepareStatement(CREATE_USER_QUERY, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getUserName());
             statement.setString(2, user.getEmail());
-            statement.setString(3, DbUtil.hashPassword(user.getPassword()));
-            statement.executeUpdate();
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                user.setId(resultSet.getInt(1));
-            }
+
+            String myHashPass = DbUtil.hashPassword(user.getPassword());
+            if (BCrypt.checkpw(user.getPassword(), myHashPass)) {
+                statement.setString(3, myHashPass);
+                statement.executeUpdate();
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if (resultSet.next()) {
+                    user.setId(resultSet.getInt(1));
+                }
+            } else
+                System.out.println("Failed to hash password");
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
