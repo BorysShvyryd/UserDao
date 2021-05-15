@@ -12,8 +12,9 @@ public class UserDao {
     public static final String PURPLE = "\033[0;35m";
 
     private static final String CREATE_USER_QUERY =
-            "INSERT INTO users(username, email, password)\n" +
-                    "VALUES (?, ?, ?)";
+            """
+                    INSERT INTO users(username, email, password)
+                    VALUES (?, ?, ?)""";
 
     public static final String USER_SEARCH_BY_ID_QUERY =
             """
