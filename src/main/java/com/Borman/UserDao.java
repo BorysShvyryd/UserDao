@@ -1,5 +1,7 @@
 package com.Borman;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import java.sql.*;
 import java.util.Objects;
 import java.util.Scanner;
@@ -13,24 +15,36 @@ public class UserDao {
             "INSERT INTO users(username, email, password)\n" +
                     "VALUES (?, ?, ?)";
 
-    private static final String USER_SEARCH_BY_ID_QUERY =
-            "SELECT *\n" +
-                    "FROM users\n" +
-                    "WHERE id = ?";
+    public static final String USER_SEARCH_BY_ID_QUERY =
+            """
+                    SELECT *
+                    FROM users
+                    WHERE id = ?""";
     private static final String UPDATE_USER_QUERY =
-            "UPDATE users SET username = ?,\n" +
-                    "email = ?,\n" +
-                    "password = ? " +
-                    "WHERE id = ?";
+            """
+                    UPDATE users SET username = ?,
+                    email = ?,
+                    password = ? WHERE id = ?""";
     private static final String DELETE_USER_BY_ID_QUERY =
-            "DELETE \n" +
-                    "FROM users\n" +
-                    "WHERE id = ?";
+            """
+                    DELETE\s
+                    FROM users
+                    WHERE id = ?""";
     private static final String SELECT_ALL_USER_QUERY =
-            "SELECT *\n" +
-                    "FROM users";
+            """
+                    SELECT *
+                    FROM users""";
+    private static final String SELECT_ALL_USER_WITH_NAME_QUERY =
+            """
+                    SELECT *
+                    FROM users
+                    WHERE username LIKE '%s'""";
 
-    public static void createUserInDb(Connection conn, User user) {
+    /**
+     * @param conn Connection to database
+     * @param user Object user
+     */
+    public static void createUserInDb(Connection conn, @org.jetbrains.annotations.NotNull User user) {
         try (PreparedStatement statement = conn.prepareStatement(CREATE_USER_QUERY, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getUserName());
             statement.setString(2, user.getEmail());
@@ -45,6 +59,10 @@ public class UserDao {
         }
     }
 
+    /**
+     * @param scann Object Scanner
+     * @return Object user
+     */
     public static User createUserInClass(Scanner scann) {
         System.out.println("Creating a user...");
         return new User(strEnteredFromTheConsole(scann, "Please enter username"),
@@ -52,51 +70,81 @@ public class UserDao {
                 strEnteredFromTheConsole(scann, "Please enter the user password"));
     }
 
+    /**
+     * The method receives text data from the console
+     *
+     * @param scanner         Object Scanner
+     * @param questionToEnter Text hint for data entry
+     * @return Data string entered
+     */
     public static String strEnteredFromTheConsole(Scanner scanner, String questionToEnter) {
         String str;
-        System.out.print(questionToEnter + ": ");
-        str = scanner.nextLine();
+        while (true) {
+            System.out.print(questionToEnter + ": ");
+            str = scanner.nextLine();
+            if ("".equals(str)) {
+                System.out.println(RED + "Data cannot be empty" + RESET);
+                continue;
+            }
+            break;
+        }
         return str;
+    }
+
+    public static int intEnteredFromTheConsole(Scanner scan, String questionToEnter) {
+        String n;
+
+        while (true) {
+            n = strEnteredFromTheConsole(scan, questionToEnter);
+            if (!isNumberGreaterEqualZero(n)) {
+                System.out.println(RED + "Incorrect argument" + RESET);
+                continue;
+            }
+            break;
+        }
+        return Integer.parseInt(n);
+    }
+
+    public static boolean isNumberGreaterEqualZero(String input) {
+        if (NumberUtils.isParsable(input)) {
+            return Integer.parseInt(input) >= 0;
+        }
+        return false;
     }
 
     public static void workWithTheDatabase(Connection conn, Scanner scann) {
 
-        String str;
+        int index;
         while (true) {
-            str = strEnteredFromTheConsole(scann, "Please enter the transaction number:\n" +
-                    "   1 - create user\n" +
-                    "   2 - search user by ID\n" +
-                    "   3 - update user by ID\n" +
-                    "   4 - delete user by ID\n" +
-                    "   5 - display a list of all users\n" +
-                    "   0 - exit\n" +
-                    "? ");
+            index = intEnteredFromTheConsole(scann, """
+                    Please enter the transaction number:
+                       1 - create user
+                       2 - search user by ID
+                       3 - update user by ID
+                       4 - delete user by ID
+                       5 - display a list of all users
+                       6 - search for a user by name
+                       0 - exit
+                    ?\s""");
 
-            switch (str) {
-                case "0" -> System.exit(0);
-                case "1" -> createUserInDb(conn, createUserInClass(scann));
-                case "2" -> {
-                    DbUtil.printUser(DbUtil.getUser(conn,
-                            USER_SEARCH_BY_ID_QUERY,
-                            Integer.parseInt(strEnteredFromTheConsole(scann, "Please enter User ID"))));
-                }
-                case "3" -> {
-                    DbUtil.runUpdateQueryByID(conn,
-                            UPDATE_USER_QUERY,
-                            Integer.parseInt(strEnteredFromTheConsole(scann, "Please enter User ID")),
-                            "update",
-                            scann);
-                }
-                case "4" -> {
-                    DbUtil.runUpdateQueryByID(conn,
-                            DELETE_USER_BY_ID_QUERY,
-                            Integer.parseInt(strEnteredFromTheConsole(scann, "Please enter User ID")),
-                            "delete",
-                            scann);
-                }
-                case "5" -> {
-                    DbUtil.printAllUsers(Objects.requireNonNull(DbUtil.getAllUsers(SELECT_ALL_USER_QUERY)));
-                }
+            switch (index) {
+                case 0 -> System.exit(0);
+                case 1 -> createUserInDb(conn, createUserInClass(scann));
+                case 2 -> DbUtil.printUser(DbUtil.getUser(conn,
+                        USER_SEARCH_BY_ID_QUERY,
+                        Integer.parseInt(strEnteredFromTheConsole(scann, "Please enter User ID"))));
+                case 3 -> DbUtil.runUpdateQueryByID(conn,
+                        UPDATE_USER_QUERY,
+                        Integer.parseInt(strEnteredFromTheConsole(scann, "Please enter User ID")),
+                        "update",
+                        scann);
+                case 4 -> DbUtil.runUpdateQueryByID(conn,
+                        DELETE_USER_BY_ID_QUERY,
+                        Integer.parseInt(strEnteredFromTheConsole(scann, "Please enter User ID")),
+                        "delete",
+                        scann);
+                case 5 -> DbUtil.printAllUsers(Objects.requireNonNull(DbUtil.getAllUsers(conn, SELECT_ALL_USER_QUERY, scann, "all")));
+                case 6 -> DbUtil.printAllUsers(Objects.requireNonNull(DbUtil.getAllUsers(conn, SELECT_ALL_USER_WITH_NAME_QUERY, scann, "withName")));
                 default -> System.out.println(RED + "Please enter correct number" + RESET);
             }
         }
