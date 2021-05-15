@@ -21,7 +21,7 @@ Console program for working with user database. The program data is stored in an
 
 ```xml
 <dependency>
-	      <groupId>org.apache.commons</groupId>
+	<groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>3.12.0</version>
 </dependency>
