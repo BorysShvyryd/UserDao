@@ -24,3 +24,7 @@ hs_err_pid*
 
 # SQL file
 *.sql
+
+idea/*
+*.iml
+target/*
