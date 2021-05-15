@@ -1,5 +1,5 @@
 # UserDao
-Training project of user education database
+User database training project
 # The second project in Java
 
 Project architect: [*Borys Shvyryd*](https://github.com/BorysShvyryd)
