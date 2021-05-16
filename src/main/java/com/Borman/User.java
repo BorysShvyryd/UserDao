@@ -24,9 +24,8 @@ public class User {
         return userName;
     }
 
-    public User setUserName(String userName) {
+    public void setUserName(String userName) {
         this.userName = userName;
-        return this;
     }
 
     public int getId() {
@@ -41,17 +40,15 @@ public class User {
         return email;
     }
 
-    public User setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
-        return this;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public User setPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
-        return this;
     }
 }
