@@ -8,7 +8,7 @@ Console program for working with user database. The program data is stored in an
 
 **Motivation.** Trying to create your second project and learn how to work with JAVA and MySQL.
 
-**How to use.** All you need is the `mysql` and` lang` library. (Download the latest version ` lang` library from the `Apache Commons` package [*here*](https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 )):
+**How to use.** All you need is the `mysql`, `jbcrypt` and` lang` library. (Download the latest version ` lang` library from the `Apache Commons` package [*here*](https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 )):
 
 **Maven:**
 ```xml
