@@ -27,6 +27,14 @@ Console program for working with user database. The program data is stored in an
 </dependency>
 ```
 
+```xml
+<dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+</dependency>
+```
+
 ## The program has the following functions:
 
 	* search user by ID
