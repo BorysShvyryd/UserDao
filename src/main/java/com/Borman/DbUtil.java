@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class DbUtil {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/?useSSL=false&characterEncoding=utf8&serverTimezone=UTC";
     private static final String DB_USER = "root";
-    private static final String DB_PASS = "Borys19041986";
+    private static final String DB_PASS = "pass";
 
     private static final String NAME_DB = "workshop2";
     private static final String NAME_TABLE_DB = "users";
